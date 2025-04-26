@@ -25,7 +25,6 @@ class RedisConsumer {
     this.redis.on("message", async (channel, message) => {
       switch(channel) {
         case RedisChannelEnum.chat:
-          // emit message
           const payload : { roomId: string } = JSON.parse(message);
           await Redis.get(payload.roomId);
           break;
