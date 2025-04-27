@@ -12,7 +12,7 @@ interface ReadRepositoryInterface<W, R> {
 }
 
 export abstract class BaseRepository<W, R extends QueryResultRow> implements WriteRepositoryInterface<W, R>, ReadRepositoryInterface<W, R> {
-  constructor(public readonly model: string) {}
+  protected constructor(public readonly model: string) {}
   async findByPk(id: number): Promise<R> {
     const result = await Pg.client!.query<R>(`select * from ${this.model} where id = $1`, [id]);
     return result?.rows[0];

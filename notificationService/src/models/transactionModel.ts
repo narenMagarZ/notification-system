@@ -1,8 +1,9 @@
-export interface eventModel {
+export interface transactionModel {
   id: number;
-  triggeredBy: number;
-  type: string;
+  debit: number;
+  credit: number;
   status: string;
+  userId: number;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
