@@ -1,7 +1,6 @@
-import { IncomingMessage, ServerResponse } from "http";
+import { NextFunction, Request, Response } from "express";
 
-export function exceptionHandler(handler: (req: IncomingMessage, res: ServerResponse) => any) {
-  return (req: IncomingMessage, res: ServerResponse) => {
-    return Promise.reject(handler(req, res));
-  }
+export function exceptionHandler(handler: (req: Request, res: Response, next: NextFunction) => any) {
+  return (req: Request, res: Response, next: NextFunction) => 
+    Promise.resolve(handler(req, res, next)).catch(err => next(err));
 }
