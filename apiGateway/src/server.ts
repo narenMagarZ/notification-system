@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, Response, Request, NextFunction } from "express";
 import { corsOptions, Pg, port } from './config';
 import { Redis } from './config/redis';
 import cors from "cors";
@@ -16,10 +16,20 @@ class App {
   public async startServer() {
     await this.connectDB();
     this.setupConfiguration();
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({extended: false}));
     this.app.use("/api/v1", TransactionProxyRouter.map());
     this.app.use("/api/v1", OrderProxyRouter.map());
     this.app.use("/api/v1", ChatProxyRouter.map());
     this.app.listen(port);
+    this.app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+      res.status(500);
+      res.json({
+        message: "Internal server error",
+        success: false,
+        code: 500
+      });
+    })
   }
 
   private setupConfiguration() {
