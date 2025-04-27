@@ -1,7 +1,7 @@
 import { ObjectSchema, ValidationOptions } from "joi";
 import { NextFunction, Request, Response } from "express";
 
-export class Validator {
+class Validator {
   private static instance: Validator;
   private static validationOptions: ValidationOptions;
   private constructor() {
@@ -28,3 +28,6 @@ export class Validator {
   }
 
 }
+
+const validator = Validator.get();
+export { validator as Validator };

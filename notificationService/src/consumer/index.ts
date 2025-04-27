@@ -1,6 +1,8 @@
 import IoRedis from 'ioredis';
 import { Redis, redisOptions } from '../config';
-import { RedisChannelEnum } from '../enum';
+import {NotificationTypeEnum, RedisChannelEnum} from '../enum';
+import {NotificationStrategy} from "../service";
+import {RedisMessageInterface} from "../interfaces";
 
 class RedisConsumer {
   private static instance: RedisConsumer;
@@ -23,14 +25,9 @@ class RedisConsumer {
       if (count) console.info(`Redis subscription ${count} : chat`);
     })
     this.redis.on("message", async (channel, message) => {
-      switch(channel) {
-        case RedisChannelEnum.chat:
-          const payload : { roomId: string } = JSON.parse(message);
-          await Redis.get(payload.roomId);
-          break;
-        default:
-          throw new Error("Channel doesn't exist");
-      }
+      const payload: RedisMessageInterface = JSON.parse(message);
+      const notificationStrategy = new NotificationStrategy(payload.type)
+      notificationStrategy.handle(payload.body);
     });
   }
 }
